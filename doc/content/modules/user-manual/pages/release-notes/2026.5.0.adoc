@@ -34,6 +34,11 @@ image::release-notes-stakeholder-node.png[Default representation of Stakeholder 
 
 ** Improve the tool to create an `Actor` graphical node by making specialization selection optional.
 ** Improve the tool to create a `Stakeholder` graphical node by making specialization selection optional.
+* In the _Explorer_ view:
+
+** `Expression` elements now display their full textual representation:
+
+image::explorer-expression-text.png[Expression textual representation]
 
 == Technical details
 
