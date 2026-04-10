@@ -20,10 +20,13 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.sirius.components.core.api.IEditingContext;
 import org.eclipse.syson.services.UtilService;
 import org.eclipse.syson.services.api.ISysONResourceService;
+import org.eclipse.syson.sysml.Element;
 import org.eclipse.syson.sysml.Expose;
 import org.eclipse.syson.sysml.LibraryPackage;
 import org.eclipse.syson.sysml.Membership;
 import org.eclipse.syson.sysml.Namespace;
+import org.eclipse.syson.sysml.ParameterMembership;
+import org.eclipse.syson.sysml.helper.EMFUtils;
 import org.eclipse.syson.sysml.util.ElementUtil;
 import org.eclipse.syson.tree.explorer.filters.SysONTreeFilterConstants;
 import org.eclipse.syson.tree.explorer.services.api.ISysONExplorerFilterService;
@@ -128,6 +131,17 @@ public class SysONExplorerFilterService implements ISysONExplorerFilterService {
     }
 
     @Override
+    public List<Object> hideExpressionInternals(List<Object> elements) {
+        return elements.stream().filter(e -> {
+            if (e instanceof Element element) {
+                return EMFUtils.getFirstAncestor(ParameterMembership.class, element, (o) -> Boolean.TRUE).isEmpty();
+            } else {
+                return true;
+            }
+        }).toList();
+    }
+
+    @Override
     public List<Object> applyFilters(IEditingContext editingContext, List<?> elements, List<String> activeFilterIds) {
         List<Object> alteredElements = new ArrayList<>(elements);
         if (activeFilterIds.contains(SysONTreeFilterConstants.HIDE_MEMBERSHIPS_TREE_ITEM_FILTER_ID)) {
@@ -147,6 +161,9 @@ public class SysONExplorerFilterService implements ISysONExplorerFilterService {
         }
         if (activeFilterIds.contains(SysONTreeFilterConstants.HIDE_EXPOSE_ELEMENTS_TREE_ITEM_FILTER_ID)) {
             alteredElements = this.hideExposeElements(alteredElements);
+        }
+        if (activeFilterIds.contains(SysONTreeFilterConstants.HIDE_EXPRESSION_INTERNALS_ID)) {
+            alteredElements = this.hideExpressionInternals(alteredElements);
         }
         return alteredElements;
     }
