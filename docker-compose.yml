@@ -28,3 +28,4 @@ services:
       - syson
 networks:
   syson:
+docker compose up
